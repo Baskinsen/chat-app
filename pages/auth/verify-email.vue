@@ -30,7 +30,7 @@ let response = ref(null);
 definePageMeta({
   title: "Verify Email",
 
-  middleware: ['route-guard']
+  // middleware: ['route-guard']
 })
 
 onBeforeMount(async () => {

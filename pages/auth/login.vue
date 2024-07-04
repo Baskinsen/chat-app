@@ -65,7 +65,7 @@ useHead({
 
 });
 definePageMeta({
-  middleware: ['route-guard']
+  // middleware: ['route-guard']
 })
 const router = useRouter();
 const authStore = useAuthStore();

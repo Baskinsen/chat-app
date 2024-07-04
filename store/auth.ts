@@ -23,7 +23,7 @@ const useAuthStore = defineStore("auth", {
       return state.user;
     },
     getIsAuthenticated: (state) => {
-      state.isAuthenticated = state.token !== null ? true : false;
+      state.isAuthenticated = state.token !== null || "" ? true : false;
       return state.isAuthenticated;
     }
   },

@@ -101,7 +101,7 @@
 
 definePageMeta({
   title: "Sign Up",
-  middleware: ['route-guard']
+  // middleware: ['route-guard']
 })
 const toast = useToast();
 

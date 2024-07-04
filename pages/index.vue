@@ -29,13 +29,12 @@ import useAuthStore from "~/store/auth"
   definePageMeta({
     title: "Home",
     description: "Welcome to Nuxt UI Starter",
-
     scrollToTop: true
   
   })
   const authStore = useAuthStore()
   console.log(authStore.getUser)
-  const user = authStore.getUser
+  const user = authStore?.getUser
   console.log(user)
 
 </script>
