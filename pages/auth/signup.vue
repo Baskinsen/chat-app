@@ -99,6 +99,10 @@
 
 <script setup >
 
+definePageMeta({
+  title: "Sign Up",
+  middleware: ['route-guard']
+})
 const toast = useToast();
 
 // interface credentials {

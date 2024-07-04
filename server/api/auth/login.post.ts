@@ -3,8 +3,6 @@ import { sign } from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { User } from "../../models/index";
 
-const ACCESS_SECRET: any = process.env.JWT_ACCESS_SECRET;
-const REFRESH_SECRET: any = process.env.JWT_REFRESH_SECRET;
 interface LoginRequest {
   username: string;
   password: string;
@@ -13,26 +11,9 @@ interface LoginResponse {
   status: number;
   statusText: string;
   statusMessage: string;
-  data: {
-    _id: string;
-    username: string;
-    email: string;
-    first_name: string;
-    last_name: string;
-    isVerifiedEmail: boolean;
-    tokens: {
-      accessToken: {
-        token: string;
-        expiresIn: number;
-      };
-      refreshToken: {
-        token: string;
-        expiresIn: number;
-      };
-    };
-  };
 }
 export default eventHandler(async (event) => {
+  const runtimeConfig = useRuntimeConfig()
   const body = (await readBody(event)) as LoginRequest;
   const credentials = {
     username: body?.username,
@@ -95,6 +76,7 @@ export default eventHandler(async (event) => {
   }
 
   try {
+
     const newUserData = {
       _id: user?._id,
       username: user?.username,
@@ -102,14 +84,14 @@ export default eventHandler(async (event) => {
       first_name: user?.first_name,
       last_name: user?.last_name,
     };
-    const accessToken = sign({ ...newUserData }, ACCESS_SECRET, {
+
+    const accessToken = sign({ ...newUserData }, runtimeConfig.JWT_Access_Secret, {
       expiresIn: 60 * 15,
     });
-    const refreshToken = sign({ ...newUserData }, REFRESH_SECRET, {
+    const refreshToken = sign({ ...newUserData }, runtimeConfig.JWT_Refresh_Secret, {
       expiresIn: 60 * 60 * 24,
     });
 
-    console.log(user?._id, user?.username);
     user.accessToken = accessToken;
     user.refreshToken = refreshToken;
     if (
@@ -117,30 +99,18 @@ export default eventHandler(async (event) => {
       user.refreshToken === refreshToken
     ) {
       user?.save();
+      setCookie(event, 'Authorization', accessToken, { maxAge: 60 * 15, httpOnly: true, path: '/',})
+      setCookie(event, "refresh_token", refreshToken, {
+        maxAge: 60 * 60 * 24,
+        httpOnly: true,
+        path: "/",
+      });
     }
 
     const response: LoginResponse = {
       status: 200,
       statusText: "Success",
       statusMessage: "Login Successful",
-      data: {
-        _id: user?._id.toString(),
-        username: user?.username,
-        email: user?.email,
-        first_name: user?.first_name,
-        last_name: user?.last_name,
-        isVerifiedEmail: user?.isVerifiedEmail,
-        tokens: {
-          accessToken: {
-            token: user?.accessToken,
-            expiresIn: 60 * 15,
-          },
-          refreshToken: {
-            token: user?.refreshToken,
-            expiresIn: 60 * 60 * 730,
-          },
-        },
-      },
     };
     console.log(response);
     return response;

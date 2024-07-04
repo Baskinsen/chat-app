@@ -2,7 +2,10 @@
   <div class="flex w-full h-screen items-center flex-col m-auto">
     <div class="m-auto shadow-md flex flex-col gap-10 px-10 py-10 bg-gray-200">
       <h1 class="text-center text-xl font-semibold">Sign In</h1>
-      <form class="flex flex-col gap-10 max-w-[500px]" @submit.prevent="handleSubmit()">
+      <form
+        class="flex flex-col gap-10 max-w-[500px]"
+        @submit.prevent="handleSubmit()"
+      >
         <section class="flex flex-col gap-5">
           <label for="username" class="text-lg">Username</label>
           <input
@@ -17,7 +20,9 @@
         <section class="flex flex-col gap-5">
           <div class="flex justify-between">
             <label for="password" class="text-lg">Password</label>
-            <a href="/auth/forgot-password" class="text-[#60A5FA] my-auto">Forgot Password?</a>
+            <a href="/auth/forgot-password" class="text-[#60A5FA] my-auto"
+              >Forgot Password?</a
+            >
           </div>
 
           <input
@@ -43,52 +48,69 @@
       </form>
     </div>
   </div>
-  <UNotifications/>
+  <UNotifications />
 </template>
 
-<script setup>
-  const toast = useToast();
-    // interface credentials {
-    //     username: string;
-    //     password: string;
-    // }
-    
-    const credentials = ref({
-        username: '',
-        password: ''
-    })
+<script setup lang="ts">
+import useAuthStore from "~/store/auth";
 
+useHead({
+  title: "Login",
+  meta: [
+    {
+      name: "description",
+      content: "Login to your account",
+    },
+  ],
 
-    const handleSubmit = async () => {
-        try{
-            const response= await $fetch('/api/auth/login', {
-                method: 'POST',
-                body: JSON.stringify(credentials.value)
-            })
-            console.log(response)
-            toast.add({
-              id: 'login',
-              title: response.statusText,
-              description:response.statusMessage,
-              icon:"i-heroicons-check-circle",
-              color: 'primary',
-              position: 'top-right'
+});
+definePageMeta({
+  middleware: ['route-guard']
+})
+const router = useRouter();
+const authStore = useAuthStore();
+const toast = useToast();
+// interface credentials {
+//     username: string;
+//     password: string;
+// }
 
-            })
-        } catch (err) {
-            console.log(err)
-             toast.add({
-              id: 'login',
-              title: "Failed",
-              description: err.statusMessage,
-              icon:" i-heroicons-information-circle-solid",
-              color: 'rose',
-              position: 'top-right'
-              
-            })
-        }
-    }
+const credentials = ref({
+  username: "",
+  password: "",
+});
 
+const handleSubmit = async () => {
+  try {
+    const response: any = await $fetch("/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify(credentials.value),
+    });
+    console.log(response);
+    authStore.isAuthenticated = true
+    toast.add({
+      id: "login",
+      title: response.statusText,
+      description: response.statusMessage,
+      icon: "i-heroicons-check-circle",
+      color: "primary",
+      timeout: 1500,
+      callback: () => {
+        router.push("/");
+      },
+    });
+  } catch (err: any) {
+    console.log(err);
+    toast.add({
+      id: "login",
+      title: "Failed",
+      description: err.statusMessage,
+      icon: " i-heroicons-information-circle-solid",
+      color: "rose",
+      timeout: 1500,
+    });
+  }
+};
 </script>
 
 <style></style>
