@@ -1,7 +1,5 @@
-import { defineStore } from "pinia"
+import { defineStore } from "pinia";
 import jwtDecode, { type JwtDecodeOptions } from "jwt-decode";
-import { get } from "mongoose";
-
 
 interface User {
   _id: string;
@@ -15,23 +13,25 @@ const useAuthStore = defineStore("auth", {
   state: () => ({
     user: null as User | null,
     isAuthenticated: false as boolean,
-    token: useCookie("Authorization") || null
+    token: useCookie("Authorization") || null,
   }),
   getters: {
     getUser: (state) => {
+      if (state.token === null || "" || undefined) {
+        return null;
+      }
+      console.log(state.token)
       state.user = jwtDecode(state.token as string) as User;
       return state.user;
     },
     getIsAuthenticated: (state) => {
-      state.isAuthenticated = state.token !== null || "" ? true : false;
+      console.log(state.token)
+      state.isAuthenticated = state.token === undefined || null || "" ? false: true
       return state.isAuthenticated;
-    }
+    },
   },
 
-  actions: {
-    
-  }
+  actions: {},
 });
-
 
 export default useAuthStore;

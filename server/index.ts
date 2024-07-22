@@ -7,7 +7,6 @@ const config: Mongoconfig = useRuntimeConfig();
 
 export default async () => {
   try {
-    console.log(config.mongoUrl);
     await mongoose.connect(config.mongoUrl);
     console.log("DB connection established.");
   } catch (err) {

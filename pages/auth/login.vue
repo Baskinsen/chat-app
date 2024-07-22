@@ -62,11 +62,10 @@ useHead({
       content: "Login to your account",
     },
   ],
-
 });
 definePageMeta({
   // middleware: ['route-guard']
-})
+});
 const router = useRouter();
 const authStore = useAuthStore();
 const toast = useToast();
@@ -87,7 +86,7 @@ const handleSubmit = async () => {
       body: JSON.stringify(credentials.value),
     });
     console.log(response);
-    authStore.isAuthenticated = true
+    authStore.isAuthenticated = true;
     toast.add({
       id: "login",
       title: response.statusText,
@@ -96,6 +95,7 @@ const handleSubmit = async () => {
       color: "primary",
       timeout: 1500,
       callback: () => {
+        window.location.reload()
         router.push("/");
       },
     });

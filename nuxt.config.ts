@@ -6,7 +6,7 @@ export default defineNuxtConfig({
     JWT_Access_Secret: process.env.JWT_ACCESS_SECRET,
     JWT_Refresh_Secret: process.env.JWT_REFRESH_SECRET,
   },
-  modules: ["@nuxt/ui", "@pinia/nuxt", "nuxt-nodemailer", "nuxt-socket-io"],
+  modules: ["@nuxt/ui", "@pinia/nuxt", "nuxt-nodemailer"],
   nitro: {
     plugins: ["~/server/index.ts"],
   },
