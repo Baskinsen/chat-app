@@ -2,15 +2,9 @@ import mongoose from "mongoose";
 
 const roomSchema = new mongoose.Schema({
   id: String,
-  chat: [
-    {
-        text: String,
-        sender: String,
-        reciever: [String],
-        date: Date,
-        seen: Boolean
-    }
-  ],
+  description: String,
+  members: [{type: mongoose.Schema.ObjectId, ref: "users"}],
+  createdAt: { type: Date, default: Date.now },
 });
 
 const Room = mongoose.model("rooms", roomSchema);
