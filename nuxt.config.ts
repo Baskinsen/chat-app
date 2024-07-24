@@ -9,6 +9,9 @@ export default defineNuxtConfig({
   modules: ["@nuxt/ui", "@pinia/nuxt", "nuxt-nodemailer"],
   nitro: {
     plugins: ["~/server/index.ts"],
+    experimental: {
+      websocket: true,
+    }
   },
   build: {
     transpile: ["jsonwebtoken"],
